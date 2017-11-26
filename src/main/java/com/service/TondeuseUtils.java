@@ -1,7 +1,9 @@
 package com.service;
 import com.constants.AppConstants;
 import com.enums.MouvementEnum;
+import com.enums.OrientationEnum;
 import com.exceptions.MouvementException;
+import com.model.Coordonnees;
 import com.model.Tondeuse;
 import java.util.Arrays;
 
@@ -28,14 +30,16 @@ public class TondeuseUtils {
      * @param tondeuse
      * @param instruction
      */
-    public void executeInstructions(final Tondeuse tondeuse, String instruction) {
+    public Tondeuse executeInstructions(Tondeuse tondeuse, String instruction) {
+            Tondeuse vTondeuse = new Tondeuse(tondeuse);
             Arrays.asList(instruction.split(AppConstants.INSTRUCTIONS_SPLIT)).forEach(m -> {
                 try {
-                    this.moveTondeuse(tondeuse, m);
+                    this.moveTondeuse(vTondeuse, m);
                 } catch (MouvementException e) {
                     System.out.println(e.getMessage());
                 }
             });
+            return vTondeuse;
     }
 
     /**
@@ -47,33 +51,34 @@ public class TondeuseUtils {
     private void moveTondeuse(Tondeuse tondeuse, String mouvement) throws MouvementException {
         MouvementEnum m = MouvementEnum.getMouvement(mouvement);
         if (MouvementEnum.D.equals(m) || MouvementEnum.G.equals(m)) {
-            moveOrientation(tondeuse, mouvement);
+            tondeuse.setoTondeuse(moveOrientation(tondeuse.getoTondeuse(), mouvement));
         } else if (MouvementEnum.A.equals(m)) {
-            movePosition(tondeuse);
+            tondeuse.setCoordonnees(movePosition(tondeuse.getCoordonnees(), tondeuse.getoTondeuse()));
         }
     }
 
     /**
      * Changement de l'orientation
      *
-     * @param tondeuse
      * @param mouvement
      */
-    private void moveOrientation(Tondeuse tondeuse, String mouvement) {
-        tondeuse.setoTondeuse(tondeuse.getoTondeuse().getNext(MouvementEnum.valueOf(mouvement)));
+    public OrientationEnum moveOrientation(OrientationEnum orientation, String mouvement) {
+        return orientation.getNext(MouvementEnum.valueOf(mouvement));
     }
+
     /**
      * Changement de la position
      *
-     * @param pTondeuse
      */
-    private void movePosition(Tondeuse pTondeuse) {
-        switch (pTondeuse.getoTondeuse()) {
-            case N: pTondeuse.setyTondeuse(Math.min(pTondeuse.getyTondeuse() + AppConstants.INC_VALUE, this.sizeYMax)); break;
-            case S: pTondeuse.setyTondeuse(Math.max(pTondeuse.getyTondeuse() - AppConstants.INC_VALUE, this.sizeYInit)); break;
-            case W: pTondeuse.setxTondeuse(Math.max(pTondeuse.getxTondeuse() - AppConstants.INC_VALUE, this.sizeXInit)); break;
-            case E: pTondeuse.setxTondeuse(Math.min(pTondeuse.getxTondeuse() + AppConstants.INC_VALUE, this.sizeXMax));break;
+    public Coordonnees movePosition(Coordonnees coordonnees, OrientationEnum orientation) {
+        Coordonnees vCoordonnees = new Coordonnees(coordonnees);
+        switch (orientation) {
+            case N: vCoordonnees.setY(Math.min(coordonnees.getY() + AppConstants.INC_VALUE, this.sizeYMax)); break;
+            case S: vCoordonnees.setY(Math.max(coordonnees.getY() - AppConstants.INC_VALUE, this.sizeYInit)); break;
+            case W: vCoordonnees.setX(Math.max(coordonnees.getX() - AppConstants.INC_VALUE, this.sizeXInit)); break;
+            case E: vCoordonnees.setX(Math.min(coordonnees.getX() + AppConstants.INC_VALUE, this.sizeXMax));break;
             default: break;
         }
+        return vCoordonnees;
     }
 }

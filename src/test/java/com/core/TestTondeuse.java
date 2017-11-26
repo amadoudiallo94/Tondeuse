@@ -21,16 +21,16 @@ public class TestTondeuse {
     @Test
     public void test1(){
         tondeuse = new Tondeuse(1, 2, OrientationEnum.valueOf("N"));
-        tondeuseUtils.executeInstructions(tondeuse, "GAGAGAGAA");
-        Tondeuse result = new Tondeuse(1, 3, OrientationEnum.N);
-        Assert.assertEquals(true, result.equals(tondeuse));
+        Tondeuse resultExpected = new Tondeuse(1, 3, OrientationEnum.N);
+        Tondeuse result = tondeuseUtils.executeInstructions(tondeuse, "GAGAGAGAA");
+        Assert.assertEquals(resultExpected, result);
     }
 
     @Test
     public void test2(){
         tondeuse = new Tondeuse(3, 3, OrientationEnum.valueOf("E"));
-        tondeuseUtils.executeInstructions(tondeuse, "AADAADADDA");
-        Tondeuse result = new Tondeuse(5, 1, OrientationEnum.E);
-        Assert.assertEquals(true, result.equals(tondeuse));
+        Tondeuse resultExpected = new Tondeuse(5, 1, OrientationEnum.E);
+        Tondeuse result = tondeuseUtils.executeInstructions(tondeuse, "AADAADADDA");
+        Assert.assertEquals(resultExpected, result);
     }
 }

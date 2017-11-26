@@ -2,59 +2,64 @@ package com.model;
 import com.enums.OrientationEnum;
 
 public class Tondeuse {
-    private int xTondeuse;
-    private int yTondeuse;
+
+    private Coordonnees coordonnees;
     private OrientationEnum oTondeuse;
 
-    public Tondeuse(int xTondeuse, int yTondeuse, OrientationEnum oTondeuse) {
-        this.xTondeuse = xTondeuse;
-        this.yTondeuse = yTondeuse;
+    public Tondeuse(Tondeuse tondeuse){
+        this(tondeuse.getCoordonnees(), tondeuse.getoTondeuse());
+    }
+
+    public Tondeuse(Coordonnees coordonnees, OrientationEnum oTondeuse) {
+        this.coordonnees = coordonnees;
         this.oTondeuse = oTondeuse;
     }
 
-    public int getxTondeuse() {
-        return xTondeuse;
+    public Tondeuse(int x, int y, OrientationEnum oTondeuse) {
+        this.coordonnees = new Coordonnees(x, y);
+        this.oTondeuse = oTondeuse;
     }
-    public void setxTondeuse(int xTondeuse) {
-        this.xTondeuse = xTondeuse;
+
+    public Coordonnees getCoordonnees() {
+        return coordonnees;
     }
-    public int getyTondeuse() {
-        return yTondeuse;
+
+    public void setCoordonnees(Coordonnees coordonnees) {
+        this.coordonnees = coordonnees;
     }
-    public void setyTondeuse(int yTondeuse) {
-        this.yTondeuse = yTondeuse;
-    }
+
     public OrientationEnum getoTondeuse() {
         return oTondeuse;
     }
-    public void setoTondeuse(OrientationEnum oTondeuse) {
+   public void setoTondeuse(OrientationEnum oTondeuse) {
         this.oTondeuse = oTondeuse;
     }
 
     @Override
     public String toString() {
         return "Tondeuse{" +
-                "xTondeuse=" + xTondeuse +
-                ", yTondeuse=" + yTondeuse +
+                "coordonnees=" + coordonnees +
                 ", oTondeuse=" + oTondeuse +
                 '}';
     }
 
     @Override
-    public boolean equals(Object o){
-        if(o != null && o instanceof Tondeuse) {
-            Tondeuse t = (Tondeuse) o;
-            return (this.getxTondeuse() == t.getxTondeuse())
-                    &&
-                    (this.getyTondeuse() == t.getyTondeuse())
-                    &&
-                    (this.getoTondeuse() == t.getoTondeuse());
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tondeuse tondeuse = (Tondeuse) o;
+
+        if (coordonnees != null ? !coordonnees.equals(tondeuse.coordonnees) : tondeuse.coordonnees != null)
+            return false;
+        return oTondeuse == tondeuse.oTondeuse;
+
     }
 
     @Override
-    public int hashCode(){
-        return this.xTondeuse + this.yTondeuse + this.oTondeuse.hashCode();
+    public int hashCode() {
+        int result = coordonnees != null ? coordonnees.hashCode() : 0;
+        result = 31 * result + (oTondeuse != null ? oTondeuse.hashCode() : 0);
+        return result;
     }
 }

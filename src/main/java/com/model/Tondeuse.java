@@ -39,4 +39,22 @@ public class Tondeuse {
                 ", oTondeuse=" + oTondeuse +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o != null && o instanceof Tondeuse) {
+            Tondeuse t = (Tondeuse) o;
+            return (this.getxTondeuse() == t.getxTondeuse())
+                    &&
+                    (this.getyTondeuse() == t.getyTondeuse())
+                    &&
+                    (this.getoTondeuse() == t.getoTondeuse());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        return this.xTondeuse + this.yTondeuse + this.oTondeuse.hashCode();
+    }
 }

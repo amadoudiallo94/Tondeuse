@@ -4,25 +4,13 @@ import com.enums.MouvementEnum;
 import com.enums.OrientationEnum;
 import com.exceptions.MouvementException;
 import com.model.Coordonnees;
+import com.model.Grille;
 import com.model.Tondeuse;
 import java.util.Arrays;
 
 public class TondeuseUtils {
 
-    private final int sizeXInit = 0;
-    private final int sizeYInit = 0;
-    private final int sizeXMax;
-    private final int sizeYMax;
-
-    /**
-     *
-     * @param sizeXMax
-     * @param sizeYMax
-     */
-    public TondeuseUtils(int sizeXMax, int sizeYMax) {
-        this.sizeXMax = sizeXMax;
-        this.sizeYMax = sizeYMax;
-    }
+    public TondeuseUtils() {}
 
     /**
      * Mouvements de la tondeuse suivant la série d'instructions
@@ -30,11 +18,11 @@ public class TondeuseUtils {
      * @param tondeuse
      * @param instruction
      */
-    public Tondeuse executeInstructions(Tondeuse tondeuse, String instruction) {
+    public Tondeuse executeInstructions(Tondeuse tondeuse, Grille grille, String instruction) {
             Tondeuse vTondeuse = new Tondeuse(tondeuse);
             Arrays.asList(instruction.split(AppConstants.INSTRUCTIONS_SPLIT)).forEach(m -> {
                 try {
-                    this.moveTondeuse(vTondeuse, m);
+                    this.moveTondeuse(vTondeuse, grille, m);
                 } catch (MouvementException e) {
                     System.out.println(e.getMessage());
                 }
@@ -48,12 +36,12 @@ public class TondeuseUtils {
      * @param tondeuse
      * @param mouvement
      */
-    private void moveTondeuse(Tondeuse tondeuse, String mouvement) throws MouvementException {
+    private void moveTondeuse(Tondeuse tondeuse, Grille grille, String mouvement) throws MouvementException {
         MouvementEnum m = MouvementEnum.getMouvement(mouvement);
         if (MouvementEnum.D.equals(m) || MouvementEnum.G.equals(m)) {
             tondeuse.setoTondeuse(moveOrientation(tondeuse.getoTondeuse(), mouvement));
         } else if (MouvementEnum.A.equals(m)) {
-            tondeuse.setCoordonnees(movePosition(tondeuse.getCoordonnees(), tondeuse.getoTondeuse()));
+            tondeuse.setCoordonnees(movePosition(tondeuse.getCoordonnees(), grille, tondeuse.getoTondeuse()));
         }
     }
 
@@ -70,13 +58,13 @@ public class TondeuseUtils {
      * Changement de la position
      *
      */
-    public Coordonnees movePosition(Coordonnees coordonnees, OrientationEnum orientation) {
+    public Coordonnees movePosition(Coordonnees coordonnees, Grille grille, OrientationEnum orientation) {
         Coordonnees vCoordonnees = new Coordonnees(coordonnees);
         switch (orientation) {
-            case N: vCoordonnees.setY(Math.min(coordonnees.getY() + AppConstants.INC_VALUE, this.sizeYMax)); break;
-            case S: vCoordonnees.setY(Math.max(coordonnees.getY() - AppConstants.INC_VALUE, this.sizeYInit)); break;
-            case W: vCoordonnees.setX(Math.max(coordonnees.getX() - AppConstants.INC_VALUE, this.sizeXInit)); break;
-            case E: vCoordonnees.setX(Math.min(coordonnees.getX() + AppConstants.INC_VALUE, this.sizeXMax));break;
+            case N: vCoordonnees.setY(Math.min(coordonnees.getY() + AppConstants.INC_VALUE, grille.getSizeYMax())); break;
+            case S: vCoordonnees.setY(Math.max(coordonnees.getY() - AppConstants.INC_VALUE, grille.getSizeYInit())); break;
+            case W: vCoordonnees.setX(Math.max(coordonnees.getX() - AppConstants.INC_VALUE, grille.getSizeXInit())); break;
+            case E: vCoordonnees.setX(Math.min(coordonnees.getX() + AppConstants.INC_VALUE, grille.getSizeXMax()));break;
             default: break;
         }
         return vCoordonnees;
